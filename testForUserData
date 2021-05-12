@@ -1,0 +1,23 @@
+#!/bin/bash
+
+apt-get -y update
+apt-get -y upgrade
+apt-get -y install nginx
+systemctl enable nginx
+rm -f /var/www/html/index*.html
+(
+cat > /var/www/html/index.html << EOF
+<html>
+<head>
+Morgen 2 World
+</head>
+<body>
+Morgen 2 world
+</body>
+</html>
+EOF
+)
+systemctl start nginx
+systemctl restart nginx
+touch /home/test.txt
+echo 'The user data passed' > /home/test.txt
