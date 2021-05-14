@@ -40,7 +40,7 @@ declare -a arr=("us-east-1" "us-east-2" "us-west-1" "us-west-2" "us-east-1" "ap-
 for i in "${arr[@]}"; do
 	echo -e "${GREEN}EC2${ENDCOLOR}" && aws --region $i resourcegroupstaggingapi get-resources --output $output --profile $username |grep -e ec2 && echo -e "${GREEN}RDS${ENDCOLOR}" && aws --region $i rds describe-db-instances --output $output --profile $username && echo -e "${GREEN}EC2${ENDCOLOR}" && aws --region $i ecs list-task-definitions --output $output --profile $username && echo -e "${GREEN}S3${ENDCOLOR}" && aws --region $i s3 ls --output $output --profile $username && echo - "${GREEN}SQS${ENDCOLOR}" && aws --region $i resourcegroupstaggingapi get-resources --output $output --profile $username |grep -e sqs && echo -e "${GREEN}ELB${ENDCOLOR}" &&  aws --region $i elb describe-load-balancers --output $output --profile $username && echo -e "${GREEN}LAMBDA${ENDCOLOR}" && aws --region $i lambda list-functions --output $output --profile $username && echo -e "${GREEN}VPC${ENDCOLOR}" && aws --region $i resourcegroupstaggingapi get-resources --output $output --profile $username | grep -e vpc
 	done
-	
+
 
 #echo "[profile $profile]\nregion = ${region[0]}\noutput = $output" 
 
