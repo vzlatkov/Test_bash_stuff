@@ -1,0 +1,45 @@
+#!/bin/bash
+
+#Initialization script for all types of LINUX OSes by VZlatkov (a.k.a. Xerxes).
+#v1.0.1
+#This is the extended variant of init.sh
+#In this initial revision an if statement will be added that will determine which is the default OS package manager and use it to create the variable needed to execute all installations and updates.
+
+#Declaring the most common package managers! 
+declare -a arr=("yum" "pakman" "apt")
+
+#For loop that checks which is the correct one
+for i in "${arr[@]}"; do
+	echo which $i #2> /dev/null
+done
+	
+#This is an "if" statement to determine the package manager
+
+if [ $? -eq 0 ]
+then echo $i
+fi
+
+$i -y update
+$i -y upgrade
+#$i -y install nginx
+#systemctl enable nginx
+#rm -f /var/www/html/index*.html
+#(
+#cat > /var/www/html/index.html <<EOF
+#<html>
+#<head>
+#Hello from the bucket
+#</head>
+#<body>
+#S3 FTW
+#</body>
+#</html>
+#EOF
+#)
+#systemctl start nginx
+#systemctl restart nginx
+
+echo '                                                  DONE'
+echo '==================================================================================================='
+
+
