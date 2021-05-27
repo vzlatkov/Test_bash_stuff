@@ -5,9 +5,9 @@
 #This is the extended variant of init.sh
 #In this initial revision an if statement will be added that will determine which is the default OS package manager and use it to create the variable needed to execute all installations and updates.
 #v1.0.2
-#In this revision, the script will be amde interactive and would provide the options to install different components to the server.
+#In this revision, the script will be made interactive and would provide the options to install different components to the server.
 #v1.0.3
-#In this revision - fix the sudo issue by determine if the user is root or not.
+#In this revision - fix the sudo issue by determinating if the user is root or not.
 #v1.0.4
 #Fixed all of the bugs  and defined a "while" condition
 #v1.0.5
