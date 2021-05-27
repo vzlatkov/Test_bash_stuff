@@ -8,8 +8,10 @@
 #In this revision, the script will be amde interactive and would provide the options to install different components to the server.
 #v1.0.3
 #In this revision - fix the sudo issue by determine if the user is root or not.
-
-
+#v1.0.4
+#Fixed all of the bugs  and defined a "while" condition
+#v1.0.5
+#Added "update" and "upgrade" option
 
 #DECLARE COLORS
 GREEN="\e[32m"
@@ -36,6 +38,15 @@ echo '......................................................'
 
 #The initialization starts from here
 
+	read -p "Would you like to update (y/n) $cr" update
+	if [ $update == y ] 
+	then sudo $i -y update
+	fi
+
+	read -p "Would you like to upgrade (y/n) $cr" upgrade
+	if [ $upgrade == y ]
+	then sudo $i -y upgrade
+	fi
 
 #Opening to the script. It is a function that would break if no further input is required.
 
@@ -44,7 +55,6 @@ installprompt(){
 	read -p "Would you like to install a package? (y/n) $cr" would
 
 }
-#	installprompt # Calls the installation prompt
 
 #Function to repeat the installation or break	
 	repeatinstall(){
@@ -65,15 +75,8 @@ repeatinstall
 
 done
 sleep 3
-echo -e "				${GREEN} ***That was it, exiting now*** ${ENDCOLOR}"
+echo -e "				${GREEN} ***That was it, exiting now*** ${END}"
 sleep 2
 clear
 exit
-#else
-#sleep 3 
-#echo 'Script ends'
-#exit	
-#clear
-#fi
 
-#repeatinstall
