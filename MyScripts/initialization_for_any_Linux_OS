@@ -4,42 +4,105 @@
 #v1.0.1
 #This is the extended variant of init.sh
 #In this initial revision an if statement will be added that will determine which is the default OS package manager and use it to create the variable needed to execute all installations and updates.
+#v1.0.2
+#In this revision, the script will be amde interactive and would provide the options to install different components to the server.
+
+
+
+#DECLARE COLORS
+GREEN="\e[32m"
+END="\e[0m"
+cr=`echo $'\n'`
+cr=${cr%.}
+nl=`echo '>>>'`	
 
 #Declaring the most common package managers! 
 declare -a arr=("yum" "pakman" "apt")
 
 #For loop that checks which is the correct one
 for i in "${arr[@]}"; do
-	echo which $i #2> /dev/null
+	echo which $i 1> /dev/null
 done
-	
+
+echo '......................................................'
 #This is an "if" statement to determine the package manager
 
 if [ $? -eq 0 ]
-then echo $i
+then echo "The package in use is $i"
+fi
+echo '......................................................'
+
+#The initialization starts from here
+
+
+#Opening to the script. It is a function that would break if no further input is required.
+
+installprompt(){
+
+	read -p "Would you like to install a package? (y/n) $cr" would
+
+}
+	installprompt # Calls the installation prompt
+
+#Function to repeat the installation or break	
+	repeatinstall(){
+
+        read -p "state the package name $cr $cr $nl" pkg #If the "yes" option is chosen, installs the package and then calls the install prompt once again
+
+        $i -y install $pkg
+        installprompt
+#        repeatinstall
+
+}
+
+
+#if [ $would == n ] || [ -z $would ] #If the "no" option or no option is set, closes the script
+#then    
+#        exit
+
+if [ $would == y ]
+then
+	
+repeatinstall
+
+else
+sleep 1
+echo 'Script ends'
+exit	
+clear
 fi
 
-$i -y update
-$i -y upgrade
-#$i -y install nginx
+repeatinstall
+
+
 #systemctl enable nginx
 #rm -f /var/www/html/index*.html
 #(
 #cat > /var/www/html/index.html <<EOF
 #<html>
 #<head>
-#Hello from the bucket
+#THIS IS A FRESH INSTALL
 #</head>
 #<body>
-#S3 FTW
+#THIS OS HAS JUST BEEN INSTALLED FOR TESTING PURPOSES AND IT IS NOT IN PRODUCTION
 #</body>
 #</html>
 #EOF
 #)
+#echo date >> /var/www/html/index*.html
+#echo uptime >> /var/www/html/index*.html
 #systemctl start nginx
 #systemctl restart nginx
+#$i -y install awscli
+#$i -y install python3
 
-echo '                                                  DONE'
-echo '==================================================================================================='
+#Some visuals to be added here
+#$i -y install neofetch
+#echo neofetch >> ~/.bashrc 
+
+
+
+#echo '						                                                  DONE'
+#echo '========================================================================================================================================================================'
 
 
