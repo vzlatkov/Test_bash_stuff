@@ -6,6 +6,8 @@
 #In this initial revision an if statement will be added that will determine which is the default OS package manager and use it to create the variable needed to execute all installations and updates.
 #v1.0.2
 #In this revision, the script will be amde interactive and would provide the options to install different components to the server.
+#v1.0.3
+#In this revision - fix the sudo issue by determine if the user is root or not.
 
 
 
@@ -49,16 +51,11 @@ installprompt(){
 
         read -p "state the package name $cr $cr $nl" pkg #If the "yes" option is chosen, installs the package and then calls the install prompt once again
 
-        $i -y install $pkg
+        sudo $i -y install $pkg
         installprompt
-#        repeatinstall
 
 }
 
-
-#if [ $would == n ] || [ -z $would ] #If the "no" option or no option is set, closes the script
-#then    
-#        exit
 
 if [ $would == y ]
 then
@@ -66,43 +63,10 @@ then
 repeatinstall
 
 else
-sleep 1
+sleep 3 
 echo 'Script ends'
 exit	
 clear
 fi
 
 repeatinstall
-
-
-#systemctl enable nginx
-#rm -f /var/www/html/index*.html
-#(
-#cat > /var/www/html/index.html <<EOF
-#<html>
-#<head>
-#THIS IS A FRESH INSTALL
-#</head>
-#<body>
-#THIS OS HAS JUST BEEN INSTALLED FOR TESTING PURPOSES AND IT IS NOT IN PRODUCTION
-#</body>
-#</html>
-#EOF
-#)
-#echo date >> /var/www/html/index*.html
-#echo uptime >> /var/www/html/index*.html
-#systemctl start nginx
-#systemctl restart nginx
-#$i -y install awscli
-#$i -y install python3
-
-#Some visuals to be added here
-#$i -y install neofetch
-#echo neofetch >> ~/.bashrc 
-
-
-
-#echo '						                                                  DONE'
-#echo '========================================================================================================================================================================'
-
-
