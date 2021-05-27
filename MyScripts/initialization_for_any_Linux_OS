@@ -44,7 +44,7 @@ installprompt(){
 	read -p "Would you like to install a package? (y/n) $cr" would
 
 }
-	installprompt # Calls the installation prompt
+#	installprompt # Calls the installation prompt
 
 #Function to repeat the installation or break	
 	repeatinstall(){
@@ -56,17 +56,24 @@ installprompt(){
 
 }
 
+installprompt
 
-if [ $would == y ]
-then
+while [ $would == y ]
+do
 	
 repeatinstall
 
-else
-sleep 3 
-echo 'Script ends'
-exit	
+done
+sleep 3
+echo -e "				${GREEN} ***That was it, exiting now*** ${ENDCOLOR}"
+sleep 2
 clear
-fi
+exit
+#else
+#sleep 3 
+#echo 'Script ends'
+#exit	
+#clear
+#fi
 
-repeatinstall
+#repeatinstall
