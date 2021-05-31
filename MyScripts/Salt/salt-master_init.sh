@@ -30,7 +30,10 @@ systemctl restart salt-master
 ###     Tests if the conf file/dir exists   ###
 
 if [ -d /etc/salt/master ]; #Checks if the dir exists
-        then continue #If exists - skips the "elif/else" statement
+        then 
+	echo "interface: $IP" >> /etc/salt/master #Adds the local IP addr of the master in the confi file 
+		
+#continue #If exists - skips the "elif/else" statement
         else #If it doesn't exist - creates the path and file
                 mkdir /etc/salt/
 
