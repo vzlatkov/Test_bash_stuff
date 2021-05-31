@@ -2,7 +2,8 @@
 
 #Automation script for installing and configuring Conslul server by VZlatkov a.k.a. - Xerxes
 #v1.0.1
-
+#v1.0.2 - There were issues with some whitespaces that were breaking the configuration. Fixed and fully working!
+#No longer uses DIG to get the machine's IP, which leads for less things to install which cuts the initiallization times significantly. Also - the less utills on the machine - the more secure the system.
 
 
 ###     Updates and upgrades the OS so all dependencies are available   ###
@@ -22,6 +23,7 @@ if [ -f /etc/systemd/system/consul.service = $FILE ]; #Checks if the file exists
 fi
 
 ###     This is a consul.conf template in a HEREDOC     ###
+
 nl="ExecStart=/usr/bin/consul agent -server \ \n        -advertise=IP \ \n      -bind=IP \ \n        -data-dir=/var/lib/consul \ \n        -bootstrap \ \n        -config-dir=/etc/consul.d\n"
 
 (
@@ -36,7 +38,7 @@ Wants=network-online.target
 Type=simple
 User=consul
 Group=consul
-$(printf "%b" "$nl")
+$(printf "%b" "$nl"|sed 's/ *$//g')
 
 ExecReload=/bin/kill -HUP $MAINPID
 KillSignal=SIGINT
@@ -49,7 +51,7 @@ EOF
 )
 
 ###     Now we have to find which is the instance's public IP and substitute the "IP" strings in the consul.conf        ###
-apt -y install dnsutills #Makes sure "dig" exists
+#apt -y install dnsutills #Makes sure "dig" exists
 IP=$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1) #Assigns the public IP of the machine to a variable so we can use it
 
 ###     Those substitute the two "IP" strings with the OG IP    ###
@@ -65,4 +67,4 @@ sleep 2
 systemctl restart consul
 sleep 2
 consul members
-                                                                            
+
