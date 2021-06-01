@@ -1,8 +1,13 @@
-#/bin/bash
+#!/bin/bash
 
 ###This is a script for automatization of the installation and configuration of a Salt Stack master server. By VZlatkov (a.k.a. Xerxes)
 ###v1.0.1
 ### In this version we are going to set the basic installation of the Salt-master by updating and upgrading the OS and installing the needed dependencies. Then we are going to install the master server itself.
+###v1.0.2
+###Fixed the issue where if the conf file exists, it skips and does not add the local IP in it.
+###v1.0.3
+###This revision adds the missing "!" to the ShaBang, which was causing my userdata to fail whole day :D :D :D 
+
 
 
 ###This is the initial dependency installation part of the script
