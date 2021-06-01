@@ -48,3 +48,8 @@ EOF
 )
 ###Make the file Executable
 chmod +x $HOME/salt_minion_conf.sh
+
+###Restart the service
+systemctl daemon-reload
+systemctl restart salt-minion
+systemctl status salt-minion
