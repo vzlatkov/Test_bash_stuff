@@ -21,7 +21,7 @@ curl -fsSL -o /usr/share/keyrings/salt-archive-keyring.gpg https://repo.saltproj
 # Create apt sources list file
 echo "deb [signed-by=/usr/share/keyrings/salt-archive-keyring.gpg] https://repo.saltproject.io/py3/ubuntu/20.04/amd64/latest focal main" | sudo tee /etc/apt/sources.list.d/salt.list
 apt-get update
-apt-get -y install salt-master
+apt-get -y install salt-minion
 
 ###Start the service
 systemctl daemon-reload
