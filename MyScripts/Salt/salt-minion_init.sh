@@ -5,7 +5,8 @@
 ### In this version we are going to set the basic installation of the Salt-minion by updating and upgrading the OS and installing the needed dependencies. Then we are going to install the minion server itself.
 ###v1.0.2
 ###Since this script is intended to be used as a user data and can not be interactive, this revision is going to make a new interactive script on the machine/EC2 cloud instance that will remain there for further configuration (Connecting to the master, etc.)
-
+###v1.0.3
+###Fixed escaping variables in the heredoc
 
 
 
@@ -29,27 +30,31 @@ systemctl start salt-minion
 systemctl restart salt-minion
 systemctl status salt-minion
 
-			#####			V.1.0.2   STARTS FROM HERE			#####
+                        #####                   V.1.0.2   STARTS FROM HERE                      #####
 
 
 ###This is a heredoc that would create the new bash script on the instance
 (
-cat > $HOME/salt_minion_conf.sh<<EOF
-
+cat > /root/salt_minion_conf.sh<<EOF
+#!/bin/bash
 read -p "insert the master's hostname `\n`" name
 read -p "insert the master's finger `\n`" finger
 read -p "insert the master's IP `\n`" mIP
-echo "master: $name" >> /etc/salt/minion
-echo "master_finger: '$finger'" >> /etc/salt/minion
+#echo "master: $name" >> /etc/salt/minion
+#echo "master_finger: '$finger'" >> /etc/salt/minion
 
 ###Add the master in the /etc/hosts file in order to be able to resolve the master server's name
-echo "$mIP $name" >> /etc/hosts
+echo \$mIP \$name >> /etc/hosts
 EOF
 )
 ###Make the file Executable
-chmod +x $HOME/salt_minion_conf.sh
+chmod +x /root/salt_minion_conf.sh
+
+echo echo master: \$name >> /etc/salt/minion >> /root/salt_minion_conf.sh
+echo "echo master_finger: ' \$finger ' >> /etc/salt/minion" >> /root/salt_minion_conf.sh
 
 ###Restart the service
 systemctl daemon-reload
 systemctl restart salt-minion
-systemctl status salt-minion
+salt-call --local key.finger
+
