@@ -117,7 +117,7 @@ clear
                 exit;
         else        
 (
-	cat > TERRAFORM.config <<EOF
+	cat > tf.tf <<EOF
 provider "aws" {
   region     = "$region"
   access_key = "$ac"
@@ -170,7 +170,7 @@ clear
         else        
 
 (
-  cat >> TERRAFORM.config <<EOF
+  cat >> tf.tf <<EOF
 ###Assign a VPC Name
 
 resource "aws_vpc" "$vpc_name" {
@@ -267,7 +267,7 @@ echo $st
 echo $cr
 
 (
-  cat >> TERRAFORM.config <<EOF
+  cat >> tf.tf <<EOF
 ### create security group for the load balancer
 ### allow http traffic to the instances only from the LB
 resource "aws_security_group" "$elb_sg" {
@@ -313,7 +313,7 @@ echo $cr
 #read -p "INSERT OUTBOUND END PORT FOR THE EC2" ec2_tp_out
 
 (
-  cat >> TERRAFORM.config <<EOF
+  cat >> tf.tf <<EOF
 ### security group for ASG
 
 resource "aws_security_group" "$asg_sg" {
@@ -397,7 +397,7 @@ echo $cr
 
 
 (
-  cat >> TERRAFORM.config <<EOF
+  cat >> tf.tf <<EOF
 
 resource "aws_launch_configuration" "asg_launch_config" {
   name_prefix   = "asg_launch-"
@@ -495,7 +495,7 @@ echo $cr
 read -p "INSERT THE DESIRED NAME FOR THE LB ITSELF $cr $st" LBname
 
 (
-  cat >> TERRAFORM.config <<GG
+  cat >> tf.tf <<GG
 
 resource "aws_lb" "$LBname" {
   name               = "$LBname"
