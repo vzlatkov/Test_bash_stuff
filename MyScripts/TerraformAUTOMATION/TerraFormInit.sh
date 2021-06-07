@@ -1,6 +1,6 @@
 #!/bin/bash
 
-### This is a test script made by VZlatkov (a.k.a Xerxes) that uses A.Alexiev's Terraform configs that would automate the deployment of AWS resources without the need to write any code but instead just input the variables that one would need for the deployment.
+### This is a test script made by VZlatkov (a.k.a Xerxes) that uses A.Alexiev's (https://github.com/apaleksiev/) Terraform configs that would automate the deployment of AWS resources without the need to write any code but instead just input the variables that one would need for the deployment.
 ### v1.0.1
 ### I have no idea what the fuck I am going to do in this revision appart from pasting the JSON code and substituting the objects' values with variables.
 ### v1.0.2
