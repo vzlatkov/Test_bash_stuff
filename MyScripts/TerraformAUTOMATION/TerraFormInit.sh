@@ -1,6 +1,6 @@
 #!/bin/bash
 
-### This is a test script made by VZlatkov (a.k.a Xerxes) that uses A.Alexiev's (https://github.com/apaleksiev/) Terraform configs that would automate the deployment of AWS resources without the need to write any code but instead just input the variables that one would need for the deployment.
+### This is a test script made by VZlatkov (a.k.a Xerxes) that uses A.Alexiev's Terraform configs that would automate the deployment of AWS resources without the need to write any code but instead just input the variables that one would need for the deployment.
 ### v1.0.1
 ### I have no idea what the fuck I am going to do in this revision appart from pasting the JSON code and substituting the objects' values with variables.
 ### v1.0.2
@@ -9,6 +9,8 @@
 ### Plus, I have to make the script, allow you to choose which of the resources you want to use instead of creating all of them!
 ### v1.0.3
 ### This revision fixed most of the bugs and the script is now generating a fully working terraform file. The next revisions to be considered as a QOL improvements and DLC's.
+### v1.0.4
+### Added checks for the package manager and Terraform
 
 
 
@@ -27,6 +29,50 @@ cr=${cr%.}
 st=`echo '>> insert here: '`
 
 
+#This Checks for the OS's package manager 
+
+#Declaring the most common package managers!
+declare -a arr=("yum" "apt")
+
+#For loop that checks which is the correct one
+for i in "${arr[@]}"; do
+	echo which $i 1> /dev/null
+done
+
+echo '......................................................'
+#This is an "if" statement to determine the package manager
+
+if [ $? -eq 0 ]
+	then echo "The package in use is $i"
+fi
+echo '......................................................'
+
+#The initialization starts from here
+
+read -p "Would you like to update (y/n) $cr" update
+	if [ $update == y ]
+		then sudo $i -y update
+	fi
+
+read -p "Would you like to upgrade (y/n) $cr" upgrade
+if [ $upgrade == y ]
+	then sudo $i -y upgrade
+
+fi
+
+echo which terraform
+	
+if [ $? != 0 ]
+
+then continue
+
+elif [ $i == apt ]
+
+then		snap install --edge terraform
+
+else $i install -y terraform
+
+fi
 
 
 echo '                  THIS SCRIPT IS A SCRIPT FOR AUTOMATED DEPLOYMENT OF AWS RESOURCES USING TERRAFORM'
