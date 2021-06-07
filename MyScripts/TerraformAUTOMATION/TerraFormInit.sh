@@ -7,6 +7,11 @@
 ### The script is still full of bugs since most of the varibles are not escaped properly in the heredocs. However, the terraform file is creaed as intended (kind of...). 
 ### I have to make Terraform checker and installer, to hardcode an array of AMI's and instance types and provide the option to choose what to use for the launch configuration. 
 ### Plus, I have to make the script, allow you to choose which of the resources you want to use instead of creating all of them!
+### v1.0.3
+### This revision fixed most of the bugs and the script is now generating a fully working terraform file. The next revisions to be considered as a QOL improvements and DLC's.
+
+
+
 
 ###HERE WE DEFINE SOME GLOB VARIABLES TO MAKE OUR LIFES EASIER
 # THOSE ARE THE VARIABLES FOR THE COLORS:
@@ -33,13 +38,13 @@ echo '												CONNECT TO YOUR AWS ACCOUNT'
 echo "					(please check the `$HOME`/.aws/configuration file for your access and secret keys)"
 echo '############################################################################################################################'
 echo $cr
-read -p "       PLEASE INSERT THE REGION YOU WANT TO USE" region
+read -p "       PLEASE INSERT THE REGION YOU WANT TO USE $cr $st" region
 echo $st
 echo $cr
-read -p "       PLEASE INSERT ACCESS KEY " ac
+read -p "       PLEASE INSERT ACCESS KEY $cr $st" ac
 echo $st
 echo $cr
-read -p "       PLEASE INSERT A SECRET KEY " sc
+read -p "       PLEASE INSERT A SECRET KEY $cr $st" sc
 echo $st
 echo $cr
 
@@ -69,8 +74,8 @@ clear
 	cat > TERRAFORM.config <<EOF
 provider "aws" {
   region     = "$region"
-  access_key = $ac
-  secret_key = $sc
+  access_key = "$ac"
+  secret_key = "$sc"
 }
 
 EOF
@@ -87,10 +92,10 @@ echo '                        THIS IS THE VPC/NETWORK CONFIGURATION'
 echo "          (please note that the VPC configuration is mandatory for AWS)"
 echo '############################################################################################################################'
 echo $cr
-read -p "       PLEASE INSERT THE VPC NAME YOU WANT TO USE" vpc_name
+read -p "       PLEASE INSERT THE VPC NAME YOU WANT TO USE $cr $st" vpc_name
 echo $st
 echo $cr
-read -p "       PLEASE INSERT Gateway " gw
+read -p "       PLEASE INSERT Gateway $cr $st" gw
 echo $st
 echo $cr
 
@@ -122,17 +127,17 @@ clear
   cat >> TERRAFORM.config <<EOF
 ###Assign a VPC Name
 
-resource "aws_vpc" "`$vpc_name`" {
+resource "aws_vpc" "$vpc_name" {
   cidr_block = "10.0.0.0/16"
 
   tags = {
-  Name = "`$vpc_name`"
+  Name = "$vpc_name"
   }
 }
 
 ### I will leave all the subnets hardcoded, just for redundancy's sake
 resource "aws_subnet" "subnet1" {
-  vpc_id            = aws_vpc.`$vpc_name`.id
+  vpc_id            = aws_vpc.$vpc_name.id
   cidr_block        = "10.0.1.0/24"
   availability_zone = "us-east-2a"
 
@@ -142,7 +147,7 @@ resource "aws_subnet" "subnet1" {
 }
 
 resource "aws_subnet" "subnet2" {
-  vpc_id            = aws_vpc.`$vpc_name`.id
+  vpc_id            = aws_vpc.$vpc_name.id
   cidr_block        = "10.0.2.0/24"
   availability_zone = "us-east-2b"
 
@@ -152,17 +157,17 @@ resource "aws_subnet" "subnet2" {
 }
 
 ###  Create Gateway
-resource "aws_internet_gateway" "`$gw`" {
-  vpc_id = aws_vpc.`$vpc_name`.id
+resource "aws_internet_gateway" "$gw" {
+  vpc_id = aws_vpc.$vpc_name.id
 }
 
 ### Create route table pointing both subnets to the gateway
 resource "aws_route_table" "route_table" {
-  vpc_id = aws_vpc.`$vpc_name`.id
+  vpc_id = aws_vpc.$vpc_name.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.`$gw`.id
+    gateway_id = aws_internet_gateway.$gw.id
   }
 
   tags = {
@@ -193,25 +198,25 @@ echo "                  (please note that the VPC configuration is mandatory for
 echo '############################################################################################################################'
 echo $cr
 echo $cr
-read -p "INSERT THE DESIRED NAME FOR THE LOAD BALANCER'S SG" elb_sg
+read -p "INSERT THE DESIRED NAME FOR THE LOAD BALANCER'S SG $cr $st" elb_sg
 echo $st
 echo $cr
-read -p "INSERT THE DESIRED NAME FOR THE INSTANCES' SG" asg_sg
+read -p "INSERT THE DESIRED NAME FOR THE INSTANCES' SG $cr $st" asg_sg
 echo $st
 echo $cr
-read -p "INSERT INBOUND START PORT FOR THE ELB" elb_fp
+read -p "INSERT INBOUND START PORT FOR THE ELB $cr $st" elb_fp
 echo $st
 echo $cr
-read -p "INSERT INBOUND END PORT FOR THE ELB" elb_tp
+read -p "INSERT INBOUND END PORT FOR THE ELB $cr $st" elb_tp
 echo $st
 echo $cr
-read -p "INSERT THE DESIRED PROTOCOL" protocol
+read -p "INSERT THE DESIRED PROTOCOL $cr $st" protocol
 echo $st
 echo $cr
-read -p "INSERT OUTBOUND START PORT FOR THE ELB" elb_fp_out
+read -p "INSERT OUTBOUND START PORT FOR THE ELB $cr $st" elb_fp_out
 echo $st
 echo $cr
-read -p "INSERT OUTBOUND END PORT FOR THE ELB" elb_tp_out
+read -p "INSERT OUTBOUND END PORT FOR THE ELB $cr $st" elb_tp_out
 echo $st
 echo $cr
 
@@ -219,22 +224,22 @@ echo $cr
   cat >> TERRAFORM.config <<EOF
 ### create security group for the load balancer
 ### allow http traffic to the instances only from the LB
-resource "aws_security_group" "`$elb_sg`" {
-  name        = "`$elb_sg`"
+resource "aws_security_group" "$elb_sg" {
+  name        = "$elb_sg"
   description = "Allow http traffic through the Application Load Balancer"
-  vpc_id      = aws_vpc.`$vpc_name`.id
+  vpc_id      = aws_vpc.$vpc_name.id
 
   ingress {
-    from_port   = `$elb_fp`
-    to_port     = `$elb_tp`
-    protocol    = "`$protocol`"
+    from_port   = $elb_fp
+    to_port     = $elb_tp
+    protocol    = "$protocol"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
-    from_port   = `$elb_fp_out`
-    to_port     = `$elb_tp_out`
-    protocol    = "`$protocol`"
+    from_port   = $elb_fp_out
+    to_port     = $elb_tp_out
+    protocol    = "$protocol"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -250,11 +255,11 @@ EOF
 echo $cr
 echo "                  THIS IS THE SECURITY GROUP INITIALIZATION FOR THE INSTANCES"
 echo $cr
-read -p "INSERT INBOUND START PORT FOR THE EC2" ec2_fp
+read -p "INSERT INBOUND START PORT FOR THE EC2 $cr $st" ec2_fp
 echo $cr
-read -p "INSERT INBOUND END PORT FOR THE EC2" ec2_tp
+read -p "INSERT INBOUND END PORT FOR THE EC2 $cr $st" ec2_tp
 echo $cr
-read -p "INSERT THE DESIRED PROTOCOL" protocol_ec2
+read -p "INSERT THE DESIRED PROTOCOL $cr $st" protocol_ec2
 echo $cr
 echo $cr
 ###I AM LEAVING THE OUTBOUND RULES HARDCODED (ALL PORTS OPEN) FOR NOW
@@ -265,10 +270,10 @@ echo $cr
   cat >> TERRAFORM.config <<EOF
 ### security group for ASG
 
-resource "aws_security_group" "`$asg_sg`" {
-  name        = "`$asg_sg`"
+resource "aws_security_group" "$asg_sg" {
+  name        = "$asg_sg"
   description = "Allow http traffic from load balancer"
-  vpc_id      = aws_vpc.`$vpc_name`.id
+  vpc_id      = aws_vpc.$vpc_name.id
 
   ingress {
     from_port   = $ec2_fp
@@ -277,12 +282,13 @@ resource "aws_security_group" "`$asg_sg`" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+
   egress {
     from_port = 0
     to_port   = 65535
     protocol  = "tcp"
     #    security_groups = [
-    #     aws_security_group.elb_sg.id
+    #     aws_security_group.$elb_sg.id
     #    ]
     cidr_blocks = ["0.0.0.0/0"]
 
@@ -290,6 +296,8 @@ resource "aws_security_group" "`$asg_sg`" {
 
   tags = {
     Name = "Allow http traffic from LB and ssh from the internet"
+}
+}
 
 EOF
 )
@@ -323,19 +331,19 @@ echo '                        THIS IS THE ASG AND "LAUNCH CONFIG" CONFIGURATION'
 echo '############################################################################################################################'
 echo $cr
 echo $cr
-read -p "INSERT THE DESIRED NAME FOR THE AUTOSCALING GROUP" asg_test
+read -p "INSERT THE DESIRED NAME FOR THE AUTOSCALING GROUP $cr $st" asg_test
 echo $st
 echo $cr
-read -p "INSERT THE DESIRED CAPACITY FOR THE ASG" cap
+read -p "INSERT THE DESIRED CAPACITY FOR THE ASG $cr $st" cap
 echo $st
 echo $cr
-read -p "INSERT THE MIN CAPACITY FOR THE ASG" min
+read -p "INSERT THE MIN CAPACITY FOR THE ASG $cr $st" min
 echo $st
 echo $cr
-read -p "INSERT THE MAX CAPACITY FOR THE ASG" max
+read -p "INSERT THE MAX CAPACITY FOR THE ASG $cr $st" max
 echo $st
 echo $cr
-read -p "INSERT PATH TO THE FILE FOR YOUR USERDATA" userdata
+read -p "INSERT PATH TO THE FILE FOR YOUR USERDATA $cr $st" userdata
 echo $st
 echo $cr
 
@@ -350,7 +358,7 @@ resource "aws_launch_configuration" "asg_launch_config" {
   image_id      = "ami-00399ec92321828f5" #ubuntu ### This should be a variable . I have to hardcode (in an array) the possible options, so you can provision all types of AMI's
   instance_type = "t2.micro" #This should be a variable. I have to hardcode the instances available (in an array) and use them to allow the option to provision multiple instance types.
 
-  security_groups             = [aws_security_group.`$asg_sg`.id]
+  security_groups             = [aws_security_group.$asg_sg.id]
   associate_public_ip_address = true
 
   ### TEST - link iam instance profile here? ask ###
@@ -362,7 +370,7 @@ resource "aws_launch_configuration" "asg_launch_config" {
   }
 
 
-  user_data = <<-`$userdata`
+  user_data = <<-$userdata
 
 }
 
@@ -435,17 +443,19 @@ echo "                        THIS IS THE LOADBALANCER'S CONFIGURATION"
 echo '############################################################################################################################'
 echo $cr
 echo $cr
-read -p "INSERT THE DESIRED NAME FOR THE LB" test-tg
-
+read -p "INSERT THE DESIRED NAME FOR THE LB TARGET GROUP $cr $st" testtg
+echo $cr
+echo $cr
+read -p "INSERT THE DESIRED NAME FOR THE LB ITSELF $cr $st" LBname
 
 (
   cat >> TERRAFORM.config <<GG
 
-resource "aws_lb" "test" {
-  name               = "test-alb"
+resource "aws_lb" "$LBname" {
+  name               = "$LBname"
   internal           = false
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.`$elb_sg`.id]
+  security_groups    = [aws_security_group.$elb_sg.id]
   subnets = [
     aws_subnet.subnet1.id,
     aws_subnet.subnet2.id
@@ -455,11 +465,11 @@ resource "aws_lb" "test" {
 
 #create target group
 
-resource "aws_lb_target_group" "tgtest" {
-  name        = "`$test-tg`"
+resource "aws_lb_target_group" "$testtg" {
+  name        = "$testtg"
   port        = 80
   protocol    = "HTTP"
-  vpc_id      = aws_vpc.`$vpc_name`.id
+  vpc_id      = aws_vpc.$vpc_name.id
   target_type = "instance"
 
   ## TEST  changing /index.html to /
@@ -474,17 +484,16 @@ resource "aws_lb_target_group" "tgtest" {
 
 
 resource "aws_lb_listener" "alb_listener" {
-  load_balancer_arn = aws_lb.test.arn
+  load_balancer_arn = aws_lb.$LBname.arn
   port              = "80"
   protocol          = "HTTP"
 
   default_action {
     type             = "forward"
-    target_group_arn = aws_lb_target_group.tgtest.arn
+    target_group_arn = aws_lb_target_group.$testtg.arn
   }
 }
 
 GG
 )
-
 
