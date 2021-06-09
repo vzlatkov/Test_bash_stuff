@@ -1,0 +1,123 @@
+#!/bin/bash
+
+###This is a test to check if I can add JSON files in functions, create an array of those functions and then call the functions and substitude the variables in them.
+
+
+###############################################################################################
+
+### Define several "files" in here 
+
+fn1 () {
+	"This is a pseudo JSON1
+	{
+		This line is called: "$var1"
+		And this line is called: "$var2"
+}"
+}
+
+fn2 () {
+	"This is a pseudo JSON2
+	{
+		This line is called: "$var3"
+		And this line is called: "$var4"
+	}"
+
+}
+
+### END OF THE fn's
+
+###############################################################################################
+
+### create an array of functions
+
+declare -A arr
+
+arr=([fn1]=JSON1pr [fn2]=JSON1pr)
+
+###END OF THE ARRAY DECLARATION
+
+###############################################################################################
+
+###PROMPT 1 here
+
+#print -n "Do you want to use JSON1?" JSON1pr
+
+#if [ -z JSON1pr ] || [ JSON1p == n ];
+#then
+#	continue
+
+#elif [ JSON1pr != y ];
+#	then
+#		echo "UNRECOGNIZED OPTION"
+#		sleep 3
+#		exit
+
+#	elif [[ JSON1pr == y ]]; then
+#		read -p "add name for var1" var1
+#		read -p "add name for var2" var2
+		
+			#statements
+
+
+###PROMPT 2 here
+
+#print -n "Do you want to use JSON2?" JSON2pr
+
+#if [ -z JSON2pr ] || [ JSON2p == n ];
+#then
+#	continue
+
+#elif [ JSON2pr != y ];
+#	then
+#		echo "UNRECOGNIZED OPTION"
+#		sleep 3
+#		exit
+
+#	elif [[ JSON2pr == y ]]; then
+#		read -p "add name for var3" var3
+#		read -p "add name for var4" var4
+		
+			#statements
+
+### SOUNDS GOOD - DOESN'T WORK!!!
+
+
+##################################################################################################
+
+### "For" loop for the prompts
+
+for i in "${arr[@]}" do
+
+###PROMPT  here
+gg=`echo Do you want to use \$i`
+read -p "$gg" y
+
+if [ -z $y ] || [ $y == n ]
+then
+	continue
+
+elif [ $y != y ]
+	then
+		echo "UNRECOGNIZED OPTION"
+		sleep 3
+		exit
+
+	if [[ $y == y ]]
+	 then
+
+
+		read -p "add name for var3" var3
+		read -p "add name for var4" var4
+		
+			#statements
+
+### Add the things to the HEREDOC
+
+(
+cat >> /$HOME/testforVarArr.txt	<<EOF
+echo $i
+EOF
+)
+
+fi
+done
