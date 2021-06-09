@@ -8,20 +8,23 @@
 ### Define several "files" in here 
 
 fn1 () {
-	"This is a pseudo JSON1
+	cat >> /$HOME/testforVarArr.txt <<EOF
+"	This is a pseudo JSON1
 	{
 		This line is called: "$var1"
 		And this line is called: "$var2"
-}"
+} "
+EOF
 }
 
 fn2 () {
-	"This is a pseudo JSON2
+	cat >> /$HOME/testforVarArr.txt <<EOF
+"	This is a pseudo JSON2
 	{
 		This line is called: "$var3"
 		And this line is called: "$var4"
-	}"
-
+	} "
+EOF
 }
 
 ### END OF THE fn's
@@ -29,10 +32,11 @@ fn2 () {
 ###############################################################################################
 
 ### create an array of functions
+#fn1=JSON1pr
+#fn2=JSON2pr
+declare -a arr
 
-declare -A arr
-
-arr=([fn1]=JSON1pr [fn2]=JSON1pr)
+arr=("fn1" "fn2")
 
 ###END OF THE ARRAY DECLARATION
 
@@ -86,38 +90,33 @@ arr=([fn1]=JSON1pr [fn2]=JSON1pr)
 
 ### "For" loop for the prompts
 
-for i in "${arr[@]}" do
-
+for i in "${arr[@]}"; do
+	echo $i
+read -p "Do you want to use $i " yes
 ###PROMPT  here
-gg=`echo Do you want to use \$i`
-read -p "$gg" y
-
-if [ -z $y ] || [ $y == n ]
+#gg=`echo Do you want to use "$i"`
+if [ $yes == y ]
 then
-	continue
+arrVar=(${#arrVar[@]} "$i")
+fi
 
-elif [ $y != y ]
-	then
-		echo "UNRECOGNIZED OPTION"
-		sleep 3
-		exit
+echo $arrVar
 
-	if [[ $y == y ]]
-	 then
-
-
+for x in "${arrVar[@]}"; do
+echo $x
+#if	[ $x == y ]
+#then	
+		read -p "add name for var1" var1
+		read -p "add name for var2" var2
 		read -p "add name for var3" var3
 		read -p "add name for var4" var4
 		
 			#statements
 
-### Add the things to the HEREDOC
-
-(
-cat >> /$HOME/testforVarArr.txt	<<EOF
-echo $i
-EOF
-)
-
-fi
+$i >> /$HOME/testforVarArr.txt
+echo "$i"
+#else
+#	continue
+#fi
+done
 done
