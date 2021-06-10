@@ -52,17 +52,19 @@ read -p "Do you want to use $i " yes
 
 if [ $yes == y ]
 then
-arr=(${#arr[@]} "$i")
+arr1=(${#arr[@]} "$i")
+fi
+for x in "${arr1[@]}"; do
 
-	if [ $i == fn1 ]; then
+	if [ $x == fn1 ]; then
 		read -p "add name for var1" var1
 		read -p "add name for var2" var2
-		fi
-	if [ $i == fn2 ]; then	
+	
+	elif [ $x == fn2 ]; then	
 		read -p "add name for var3" var3
 		read -p "add name for var4" var4
 		fi
-fi
-$i >> /$HOME/testforVarArr.txt
+done
 
+$x >> /$HOME/testforVarArr.txt
 done
