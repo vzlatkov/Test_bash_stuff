@@ -91,19 +91,19 @@ arr=("fn1" "fn2")
 ### "For" loop for the prompts
 
 for i in "${arr[@]}"; do
-	echo $i
+#	echo $i
 read -p "Do you want to use $i " yes
 ###PROMPT  here
 #gg=`echo Do you want to use "$i"`
 if [ $yes == y ]
 then
-arrVar=(${#arrVar[@]} "$i")
-fi
+arr=(${#arr[@]} "$i")
+#fi
+#then
+#echo $arr
 
-echo $arrVar
-
-for x in "${arrVar[@]}"; do
-echo $x
+#for i in "${arr[@]}"; do
+#echo $i
 #if	[ $x == y ]
 #then	
 		read -p "add name for var1" var1
@@ -114,9 +114,9 @@ echo $x
 			#statements
 
 $i >> /$HOME/testforVarArr.txt
-echo "$i"
+#echo "$i"
 #else
 #	continue
-#fi
+fi
 done
-done
+#done
