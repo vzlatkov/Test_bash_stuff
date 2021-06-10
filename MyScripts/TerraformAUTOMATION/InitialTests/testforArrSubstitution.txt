@@ -42,81 +42,27 @@ arr=("fn1" "fn2")
 
 ###############################################################################################
 
-###PROMPT 1 here
-
-#print -n "Do you want to use JSON1?" JSON1pr
-
-#if [ -z JSON1pr ] || [ JSON1p == n ];
-#then
-#	continue
-
-#elif [ JSON1pr != y ];
-#	then
-#		echo "UNRECOGNIZED OPTION"
-#		sleep 3
-#		exit
-
-#	elif [[ JSON1pr == y ]]; then
-#		read -p "add name for var1" var1
-#		read -p "add name for var2" var2
-		
-			#statements
-
-
-###PROMPT 2 here
-
-#print -n "Do you want to use JSON2?" JSON2pr
-
-#if [ -z JSON2pr ] || [ JSON2p == n ];
-#then
-#	continue
-
-#elif [ JSON2pr != y ];
-#	then
-#		echo "UNRECOGNIZED OPTION"
-#		sleep 3
-#		exit
-
-#	elif [[ JSON2pr == y ]]; then
-#		read -p "add name for var3" var3
-#		read -p "add name for var4" var4
-		
-			#statements
-
-### SOUNDS GOOD - DOESN'T WORK!!!
-
-
-##################################################################################################
 
 ### "For" loop for the prompts
 
 for i in "${arr[@]}"; do
-#	echo $i
+
 read -p "Do you want to use $i " yes
 ###PROMPT  here
-#gg=`echo Do you want to use "$i"`
+
 if [ $yes == y ]
 then
 arr=(${#arr[@]} "$i")
-#fi
-#then
-#echo $arr
 
-#for i in "${arr[@]}"; do
-#echo $i
-#if	[ $x == y ]
-#then	
+	if [ $i == fn1 ]; then
 		read -p "add name for var1" var1
 		read -p "add name for var2" var2
+		fi
+	if [ $i == fn2 ]; then	
 		read -p "add name for var3" var3
 		read -p "add name for var4" var4
-		
-			#statements
-
-$i >> /$HOME/testforVarArr.txt
-#echo "$i"
-#else
-#	continue
+		fi
 fi
+$i >> /$HOME/testforVarArr.txt
+
 done
-#done
