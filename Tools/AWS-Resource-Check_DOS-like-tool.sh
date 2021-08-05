@@ -3,7 +3,7 @@
 ###This is a tool/utility that does different checks for an AWS account using the aws_cli. Inspired by the manual work I had to do and the fact that I am too fucking lazy to do such a manual labour.
 ###This is version 1.0.1
 ###In this revision the basic layout of the script will be created such as the UI and some of the options. Also, there are some pre-requsites that would be needed, so the script would make dependency checks as well.
-
+###This is version 1.0.2 
 
 cr=`echo $'\n'`
 version="version 1.0.1"
@@ -98,6 +98,7 @@ esac
  #           ;;
 #esac
 
-aws ec2 describe-tags --filters "Name=tag:Monitoring,Values=$tag" --output text | awk '{print $3}'
+aws ec2 describe-tags --filters "Name=tag:Monitoring,Values=$tag" "Name=tag:service,Values=*" --output text | awk '{print $5}' |sort |uniq
 #aws s3 describe-tags --filters "Name=tag:Zoo,Values=$tag" "Name=tag:Monitoring,Values=development" --output text
-
+aws ec2 describe-tags --filters "Name=tag:Zoo,Values=sofiazoo" --output text | awk '{print $5}' | sort | uniq
+aws ec2 describe-tags --filters "Name=tag:service,Values=*" --output text | awk '{print $5}' | sort | uniq
