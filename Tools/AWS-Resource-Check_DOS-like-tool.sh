@@ -8,7 +8,7 @@
 cr=`echo $'\n'`
 version="version 1.0.1"
 
-profile=cat ~/.aws/config | grep profile
+####profile=cat ~/.aws/config | grep profile
 
 #This checks if "dialog" and "aws_cli" are existing on the machine
 echo which dialog 1> /dev/null
@@ -25,6 +25,7 @@ fi
 
 #This is the dialog box's UI configuration
 HEIGHT=15
+
 WIDTH=40
 CHOICE_HEIGHT=4
 BACKTITLE="AWS Util $version"
@@ -84,7 +85,7 @@ case $CHOICE2 in
             ;;
 esac
 
-case $CHOICE3 in
+#case $CHOICE3 in
   #      1)
  #          read -p "Please select region $cr" region
 #
@@ -95,8 +96,8 @@ case $CHOICE3 in
    #     3)
   #          echo "You chose Option 3"
  #           ;;
-esac
+#esac
 
-aws --region $region resourcegroupstaggingapi tag-resources --tags $tag --profile $CHOICE3
-
+aws ec2 describe-tags --filters "Name=tag:Monitoring,Values=$tag" --output text | awk '{print $3}'
+#aws s3 describe-tags --filters "Name=tag:Zoo,Values=$tag" "Name=tag:Monitoring,Values=development" --output text
 
